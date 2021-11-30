@@ -4,6 +4,7 @@
 #include <vector>
 #include <png.hpp>
 
+// Simple Struct to represent the x and y position of a cell
 struct Coords {
 public:
 	int64_t x;
