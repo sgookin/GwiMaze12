@@ -21,6 +21,7 @@ public:
 	}
 };
 
+// Patterns for differnt cells images, X is black & 0 is white
 const static char patterns[16][4][5] = {
 	// in binary
 	// 1 << 3 left, 1 << 2 top, 1 << 1 right, 1 bottom
