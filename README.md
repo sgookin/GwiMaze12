@@ -7,7 +7,7 @@ Creates a maze with cells of 4px x 4px
 Green cell = start
 Red cell = end
 
-#Dependencies
+# Dependencies
 
 libpng
 png++
