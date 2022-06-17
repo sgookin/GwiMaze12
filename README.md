@@ -13,7 +13,9 @@ Red cell = end
 # Dependencies
 
 libpng
+
 png++
+
 
 All source code is contained within GwiMaze12/GwiMaze12/GwiMaze12.cpp
 
