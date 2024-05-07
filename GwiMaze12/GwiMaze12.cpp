@@ -2,7 +2,7 @@
 #pragma warning(disable : 4996) 
 #include <iostream>
 #include <vector>
-#include <png.hpp>
+#include <png++/png.hpp>
 
 // Simple Struct to represent the x and y position of a cell
 struct Coords {
@@ -129,11 +129,14 @@ int64_t xStart;
 Coords endCoords;
 std::vector<std::vector<int8_t>> data;
 
+//Checks to see how many unvisited cells are orthogonally adjacent
 int_fast8_t __stdcall getAvailable(Coords cell) {
 	int_fast8_t pathsAvailable = 0;
 
+	//check if current cell is the end cell
 	if (cell.x == endCoords.x && cell.y == endCoords.y) return 0;
 
+	//check left
 	if (cell.x != 0 && data[cell.x - 1][cell.y] == 0) pathsAvailable++;
 
 	//check right
@@ -147,6 +150,8 @@ int_fast8_t __stdcall getAvailable(Coords cell) {
 
 	return pathsAvailable;
 }
+
+//Updates cell data to remove wall
 void __stdcall update(Coords coords, Coords result) {
 	int_fast8_t config = data[coords.x][coords.y];
 	switch (result.x)
@@ -177,6 +182,7 @@ void __stdcall update(Coords coords, Coords result) {
 
 int main()
 {
+	// Checking for potential overflow
 	const int64_t maxLength = (int64_t)std::sqrt((double)(LLONG_MAX >> 2));
 	std::cout << "Enter your desired width:\n";
 	std::cin >> w;
@@ -193,20 +199,29 @@ int main()
 		std::cin >> h;
 	}
 
+	// Maze is represented as a 2D grid, with an 8-bit integer representing
+	// the configuration of the cell. 
 	data = std::vector<std::vector<int8_t>>(w, std::vector<int8_t>(h, 0));
+	// Vector to store list of cells visited in a connected path.
 	std::vector<Coords> cellBackTrack;
 	srand(time(NULL));
+	// Randomly choosing start and end positions
 	endCoords = Coords(rand() % w + 1, 0);
 	xStart = rand() % w + 1;
 	Coords cell = Coords(xStart, h - 1);
 	cellBackTrack.push_back(cell);
+
+	// Main Logic Loop
 	while (true) {
-		//checking for end condition
+		// Navigate backwards in path if 
 		if (getAvailable(cell) == 0) {
 			while (true) {
 				cellBackTrack.pop_back();
+
+				// checking for end condition
 				if (cellBackTrack.size() == 0) goto Finish;
 
+				// check if previous cell has open paths available
 				if (getAvailable(cellBackTrack.back()) != 0) {
 					cell = cellBackTrack.back();
 					break;
@@ -218,8 +233,8 @@ int main()
 		Coords result = Coords();
 		Coords nextCoords = Coords();
 		while (true) {
-
-			int8_t dir = rand() & 0b11; //evil bit operation hack for fast mod 4
+			// Choose random direction
+			int8_t dir = rand() & 0b11; //bit operation hack for fast mod 4
 			switch (dir) {
 			case 0:
 				result = Coords(-1, 0);
@@ -234,6 +249,7 @@ int main()
 				result = Coords(0, -1);
 				break;
 			}
+			// Checks if chosen direction is valid
 			int64_t x = cell.x + result.x;
 			int64_t y = cell.y + result.y;
 			if (x < w && x > -1 && y < h && y > -1 && data[x][y] == 0) {
@@ -256,6 +272,7 @@ Finish:
 
 	std::cout << "creating image...\n";
 
+	// Use png++ to generate maze image
 	png::image<png::rgb_pixel> maze(w << 2, h << 2);
 
 	int_fast64_t X = 0;
