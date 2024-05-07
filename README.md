@@ -17,6 +17,6 @@ libpng
 png++
 
 
-All source code is contained within GwiMaze12/GwiMaze12.cpp
+All source code is contained within GwiMaze12/GwiMaze12/GwiMaze12.cpp
 
 A Windows build is contained within Release.7z built with Visual Studio
